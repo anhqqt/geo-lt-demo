@@ -1,0 +1,19 @@
+sequenceDiagram
+    actor D as Developer
+    participant W as GitHub Actions
+    participant A as EKS API
+    participant O as k6 Operator
+    participant J as Kubernetes Job controller
+    participant K as k6 pods
+    participant B as Prepared Bookinfo
+    D->>W: Request target, total VUs, duration, runners
+    W->>W: Validate request and allowed source
+    W->>A: Check namespace controls#59; create run script
+    W->>A: Create namespaced TestRun
+    A-->>O: k6 Operator observes TestRun
+    O->>A: Create initializer, runner, starter Jobs and helper Services
+    J->>A: Create Pods for Jobs
+    K->>B: GET target_url#59; status === 200
+    Note over W,K: Observe runner Jobs#59; prepare available results
+    W->>A: Delete TestRun, then script ConfigMap#59; verify absence
+    W-->>D: Summary: execution, cleanup, available results

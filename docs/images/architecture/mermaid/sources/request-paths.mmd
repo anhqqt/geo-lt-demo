@@ -1,0 +1,8 @@
+flowchart LR
+    K6[k6 pods inside EKS] -->|Public HTTPS URL| ALB[Shared public ALB<br/>Bookinfo hostname]
+    K6 -->|Internal Service URL| DNS[Kubernetes Service DNS]
+    ALB --> Product[productpage]
+    DNS --> Product
+    Product --> Details[details]
+    Product --> Reviews[review]
+    Reviews --> Ratings[ratings]

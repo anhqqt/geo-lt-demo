@@ -1,0 +1,26 @@
+---
+config:
+  flowchart:
+    wrappingWidth: 420
+    nodeSpacing: 32
+    rankSpacing: 36
+    subGraphTitleMargin:
+      top: 12
+      bottom: 16
+---
+flowchart TB
+    subgraph L0["Layer 0"]
+        Global["global<br/>Identity + Route 53"]
+    end
+    subgraph L1["Layer 1"]
+        Core["core<br/>Regional VPC + ACM"]
+    end
+    subgraph L2["Layer 2"]
+        direction LR
+        Cluster["cluster<br/>EKS, Node groups"]
+        Bootstrap["bootstrap<br/>EKS add-ons"]
+        Services["pillars<br/>Platform services"]
+        %% Invisible links set visual order only.
+        Cluster ~~~ Bootstrap ~~~ Services
+    end
+    L0 ~~~ L1 ~~~ L2

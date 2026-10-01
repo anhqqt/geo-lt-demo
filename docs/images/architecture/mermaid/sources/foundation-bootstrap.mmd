@@ -1,0 +1,8 @@
+flowchart TB
+    S0["0. Preparation: access, configuration, backend"] --> S1["1. Apply global: identity + dns"]
+    S1 --> DNS["Publish parent NS delegation; verify Route 53 authority"]
+    DNS --> S2["2. Apply core: vpc + acm; validate wildcard certificate"]
+    S2 --> S3["3a. Platform: cluster"]
+    S3 --> S4["3b. Platform: bootstrap"]
+    S4 --> S5["3c. Platform: Bookinfo"]
+    S5 --> Ready[Dev services and shared monitoring ready]

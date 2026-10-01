@@ -1,0 +1,10 @@
+flowchart TB
+    Retain[Export required evidence and recovery material outside the foundation] --> App[Remove Bookinfo Ingress and endpoint DNS; keep shared ALB for Grafana]
+    App --> ALB[Remove final Grafana Ingress and endpoint DNS; confirm ALB and listeners are gone while LBC and EKS remain]
+    ALB --> ACM[Delete unused ACM certificate and its DNS validation records]
+    ACM --> Storage[Reconcile monitoring data and volumes while storage controller remains]
+    Storage --> Platform[Release dependent platform resources before their controllers and identities]
+    Platform --> Cluster[Remove cluster and node groups]
+    Cluster --> Base[After consumers finish: remove parent NS, then empty child zone and remaining foundation resources]
+    Base --> Evidence[Reconcile inventory and retain final teardown evidence]
+    Evidence --> Backend[Remove backend separately, including versioned objects]

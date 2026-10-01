@@ -1,0 +1,25 @@
+flowchart TB
+    Developer[Developer] -->|Dispatch or cancel| Workflow[GitHub Actions on hosted runner]
+    Workflow -.->|Assume run role through OIDC| Identity[AWS run identity]
+    Workflow -->|Direct calls with run credentials and EKS authorization| API[EKS public API]
+    Laptop["Platform maintainer"] --> IaC[Terragrunt and Terraform]
+    IaC -->|Create and maintain| Foundation
+    subgraph Foundation[Dev foundation on AWS]
+        API
+        subgraph EKS[EKS cluster]
+            Controllers[Platform controllers and k6 Operator]
+            subgraph Main[main node group]
+                App[Bookinfo services]
+            end
+            subgraph Load[load-test node group]
+                K6[k6 pods in generator namespace]
+            end
+            subgraph Obser[obser node group]
+                Monitoring[Shared Prometheus and Grafana]
+            end
+        end
+        API -->|TestRun watched by k6 Operator| Controllers
+        Controllers -->|k6 Operator coordinates run resources; Job controller creates Pods| K6
+        K6 -->|HTTP load via selected route| App
+        K6 -.->|Remote write| Monitoring
+    end
