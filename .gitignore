@@ -1,0 +1,23 @@
+# Generated dependencies and private runtime material.
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+*.pem
+*.key
+*.tfstate*
+*.tfplan
+*.tflock
+.terraform/
+.terraform.lock.hcl
+.terragrunt-cache/
+artifacts/
+terragrunt-render.json
+terragrunt-render.hcl
+crash.*
+infra/terraform-modules/bookinfo/charts/*/charts/
+
+# Manifests rendered by the load-test workflow.
+/load-tests/*.generated.yaml
