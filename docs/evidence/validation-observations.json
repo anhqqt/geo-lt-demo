@@ -1,0 +1,877 @@
+{
+  "kind": "Selected historical and workflow observations",
+  "scope": "Historical development excerpts plus executed GitHub workflow observations. These are selected evidence, not full logs or whole-assignment acceptance.",
+  "provenance": "Each SHA-256 identifies the original JSON file, not current implementation. Field keys are RFC 6901 JSON Pointers into that original file. Values are copied exactly. Counts in source fields refer to their original checker scope, not the number of selected fields.",
+  "source_history": {
+    "description": "The published commits group the final submission by topic. Recorded execution and review SHAs retain their original meaning outside this packaged history.",
+    "packaged_runtime_revision": "a81a1941eef9ac5b23f45ed8249db712958d4e5a",
+    "recorded_runtime_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+    "identical_runtime_paths": [
+      ".github/workflows/",
+      "config/",
+      "load-tests/",
+      "scripts/"
+    ],
+    "comparison": "Git blob IDs and file modes match for every file under the listed paths.",
+    "historical_acceptance_record_revision": "f30adebe5da9c40e12629b3ac2dde151a7a27d73",
+    "acceptance_scope": "The original accepted_revision is preserved under demo_package.submission_acceptance. Packaging does not turn later documentation or DNS configuration edits into part of that earlier review."
+  },
+  "snapshots": [
+    {
+      "id": "bookinfo-deployment",
+      "sources": [
+        {
+          "file": "artifacts/foundation-bookinfo/runtime/current-verification/runtime-summary.json",
+          "sha256": "eb6ddec255bfec3dd28cf6f75fc53bf69aa8a527dd5b465ea23db1ac29d14fa5",
+          "fields": {
+            "/checks": [
+              "workloads/endpoints/images/security",
+              "shared ALB and healthy targets",
+              "ACM issued and DNS alias/TXT ownership",
+              "productpage to details/review",
+              "review to ratings",
+              "real productpage proxy details and ratings 5/4 black",
+              "operator HTTPS and redirect",
+              "Grafana health and anonymous 401",
+              "authoritative/public DNS"
+            ]
+          }
+        },
+        {
+          "file": "artifacts/foundation-bookinfo/runtime/current-verification/probe-summary.json",
+          "sha256": "3ab7eccf8945b8c9a03eb294769cfe7476e08ef2a63d22504b2b49a99fe93eee",
+          "fields": {
+            "/phase": "Succeeded",
+            "/results/0/status": 200,
+            "/results/1/status": 200,
+            "/deleted_and_absent": true
+          }
+        },
+        {
+          "file": "artifacts/foundation-bookinfo/runtime/current-verification/preservation-summary.json",
+          "sha256": "d650a96f34b45b9404e2c20a62ffa3d6be36447e01e817ad32c37d1c8ba4f19d",
+          "fields": {
+            "/protected_identities": {
+              "monitoring": {
+                "unchanged": true,
+                "count": 6
+              },
+              "namespaces": {
+                "unchanged": true,
+                "count": 3
+              },
+              "controllers": {
+                "unchanged": true,
+                "count": 20
+              }
+            },
+            "/generator_pods_remaining": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "k6-operator-lifecycle",
+      "sources": [
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/k6-operator/summary.json",
+          "sha256": "e390ecd418c9efd49c02d315d15a00a89f83e60923411d780fcdd1998026001e",
+          "fields": {
+            "/checks/0": {
+              "name": "five other state versions preserved",
+              "pass": true
+            },
+            "/checks/1": {
+              "name": "changed cluster state retains managed resources and outputs",
+              "pass": true
+            },
+            "/checks/2": {
+              "name": "runner namespace controls preserved and no run leftovers",
+              "pass": true
+            },
+            "/checks/20": {
+              "name": "controller startup retries resolved before successful completion",
+              "pass": true
+            },
+            "/checks/21": {
+              "name": "exact GitHub subject and audience trust",
+              "pass": true
+            },
+            "/checks/22": {
+              "name": "six-hour role maximum",
+              "pass": true
+            },
+            "/checks/23": {
+              "name": "only cluster DescribeCluster policy",
+              "pass": true
+            },
+            "/checks/24": {
+              "name": "STANDARD access entry and exact group only",
+              "pass": true
+            },
+            "/checks/26": {
+              "name": "43 live access checks pass",
+              "pass": true
+            },
+            "/checks/27": {
+              "name": "runtime finished with four successful Jobs",
+              "pass": true
+            },
+            "/checks/28": {
+              "name": "UID cleanup has no leftovers",
+              "pass": true
+            },
+            "/checks/29": {
+              "name": "bootstrap normal plan reports no changes",
+              "pass": true
+            },
+            "/passed": 31,
+            "/scope": "k6 addon installation and bounded no-HTTP smoke; GHA OIDC/application load/monitoring not tested",
+            "/bootstrap_plan_exit_code": 0
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/k6-operator/result.json",
+          "sha256": "19efaf6fb1ba3ce49f216b6987d2c45181bfd09fbe192f46d4ed94f24f12bd64",
+          "fields": {
+            "/pass": true,
+            "/stage": "finished",
+            "/jobs_succeeded": 4,
+            "/pods_exit_zero": 4,
+            "/http_load": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "monitoring-transport-persistence",
+      "sources": [
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/kube-prometheus-stack/summary.json",
+          "sha256": "047975d2232965909118c90a296487f4b2f978e87d70dcf73854ba4ba4b15678",
+          "fields": {
+            "/runtime_checks/3": {
+              "name": "remote-write enabled without feature flags",
+              "pass": true
+            },
+            "/runtime_checks/4": {
+              "name": "internal provisioned Prometheus datasource",
+              "pass": true
+            },
+            "/runtime_checks/5": {
+              "name": "anonymous API access denied",
+              "pass": true
+            },
+            "/runtime_checks/6": {
+              "name": "Grafana datasource health OK",
+              "pass": true
+            },
+            "/runtime_checks/7": {
+              "name": "new local user defaults to Viewer",
+              "pass": true
+            },
+            "/runtime_checks/8": {
+              "name": "Viewer can read folder but cannot edit it",
+              "pass": true
+            },
+            "/runtime_checks/9": {
+              "name": "four Jobs completed on existing load-test node",
+              "pass": true
+            },
+            "/runtime_checks/10": {
+              "name": "default ServiceAccount without token mount",
+              "pass": true
+            },
+            "/runtime_checks/11": {
+              "name": "native histograms received from two distinct runners",
+              "pass": true
+            },
+            "/runtime_checks/12": {
+              "name": "Viewer datasource query returns both runner histograms",
+              "pass": true
+            },
+            "/runtime_checks/13": {
+              "name": "prometheus replacement Pod Ready",
+              "pass": true
+            },
+            "/runtime_checks/14": {
+              "name": "grafana replacement Pod Ready",
+              "pass": true
+            },
+            "/runtime_checks/15": {
+              "name": "Prometheus retains both histograms across Pod recreation",
+              "pass": true
+            },
+            "/runtime_checks/16": {
+              "name": "Grafana retains folder and Viewer across Pod recreation",
+              "pass": true
+            },
+            "/scope": "Monitoring readiness, bounded k6 remote write, datasource/auth and Pod-recreation persistence. Dashboard import/public exposure/application load remain pending.",
+            "/bootstrap_plan_exit_code": 0
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/kube-prometheus-stack/result.json",
+          "sha256": "4761f2b3cf3cadc9780660ede7d9c7d12e4f87030e5cab6c1c6e100680ce0aa3",
+          "fields": {
+            "/pass": true,
+            "/vus": 2,
+            "/runners": 2,
+            "/duration_seconds": 10,
+            "/destination": "Prometheus internal readiness endpoint",
+            "/checks_passed": 17,
+            "/cleanup": true
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/kube-prometheus-stack/final-checks.json",
+          "sha256": "662a289b601be0ab6c049363df43241b588f36f5eb754efaeeb1cb8af9df103d",
+          "fields": {
+            "/4": {
+              "name": "runner namespace controls preserved without probe leftovers",
+              "pass": true
+            },
+            "/5": {
+              "name": "same monitoring PVCs and persistent volumes",
+              "pass": true
+            },
+            "/6": {
+              "name": "both PVCs Bound using cluster default class",
+              "pass": true
+            },
+            "/8": {
+              "name": "same gp3 volume IDs and attachments in obser AZ",
+              "pass": true
+            },
+            "/21": {
+              "name": "run and Grafana probes cleaned",
+              "pass": true
+            },
+            "/25": {
+              "name": "bootstrap plan reports no changes",
+              "pass": true
+            }
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/kube-prometheus-stack/attempt-1/checks.json",
+          "sha256": "c32fa83f44a755f0ce8000d6ca5f242606aad296adc86ee4be6c1f67e4a1fa57",
+          "fields": {
+            "/11": {
+              "name": "native histograms received from two distinct runners",
+              "pass": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "grafana-public-access",
+      "sources": [
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/grafana-ingress/summary.json",
+          "sha256": "d127a848085694a8cc1aaa4a12b0b9b11721adcc45404d1c399c572ffdde18bb",
+          "fields": {
+            "/runtime_checks": 24,
+            "/final_checks": 26,
+            "/pass": true,
+            "/bootstrap_plan_exit_code": 0,
+            "/scope": "Public Grafana ALB/DNS/HTTPS/authentication and preservation; no application load, dashboard import, Bookinfo coexistence or teardown."
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/grafana-ingress/result.json",
+          "sha256": "d7b22c3a08867dfc2fcb5d751bb294a31ff80f5f25cd27b66c851c5afe1ebeb8",
+          "fields": {
+            "/pass": true,
+            "/checks": 24,
+            "/dashboard_count": 0
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/grafana-ingress/checks.json",
+          "sha256": "e5b11c26d6122d652b890c8becd1345cc12365c66f31336728f2cd423c4ec647",
+          "fields": {
+            "/6": {
+              "name": "HTTPS listener uses the existing issued wildcard certificate",
+              "pass": true
+            },
+            "/7": {
+              "name": "HTTP redirects to HTTPS",
+              "pass": true
+            },
+            "/8": {
+              "name": "Grafana Pod is the healthy ALB IP target",
+              "pass": true
+            },
+            "/9": {
+              "name": "DNS alias and TXT identify this ALB and Ingress",
+              "pass": true
+            },
+            "/11": {
+              "name": "authoritative and public DNS resolve Grafana",
+              "pass": true
+            },
+            "/12": {
+              "name": "public TLS chain and hostname verified",
+              "pass": true
+            },
+            "/13": {
+              "name": "public Grafana health is OK",
+              "pass": true
+            },
+            "/15": {
+              "name": "anonymous protected API denied",
+              "pass": true
+            },
+            "/17": {
+              "name": "public authenticated datasource query path healthy",
+              "pass": true
+            },
+            "/19": {
+              "name": "new local user has Viewer role",
+              "pass": true
+            },
+            "/20": {
+              "name": "Viewer folder access after permission propagation",
+              "pass": true
+            },
+            "/21": {
+              "name": "Viewer can read but cannot edit folder over HTTPS",
+              "pass": true
+            },
+            "/22": {
+              "name": "Viewer can query the internal Prometheus datasource",
+              "pass": true
+            },
+            "/23": {
+              "name": "temporary Viewer and folder removed",
+              "pass": true
+            }
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/grafana-ingress/final-checks.json",
+          "sha256": "77d7b5f9d25700d9dfbb8c6cd08139bcfaa490d5da3d14ce1ab5bc94072f1970",
+          "fields": {
+            "/18": {
+              "name": "original zone NS/SOA and ACM validation records preserved",
+              "pass": true
+            },
+            "/19": {
+              "name": "DNS records unchanged during verification",
+              "pass": true
+            },
+            "/21": {
+              "name": "attempt-1 temporary resources cleaned",
+              "pass": true
+            },
+            "/22": {
+              "name": "attempt-2 temporary resources cleaned",
+              "pass": true
+            },
+            "/23": {
+              "name": ". temporary resources cleaned",
+              "pass": true
+            }
+          }
+        },
+        {
+          "file": "artifacts/foundation-bootstrap/runtime/grafana-ingress/attempt-2/checks.json",
+          "sha256": "bb746d52e67c3f15e39be3021646546a646640beded822f1e10562f5ae27fefb",
+          "fields": {
+            "/20": {
+              "name": "Viewer folder access after permission propagation",
+              "pass": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "source_repository": "geocomply-load-testing",
+  "development_reports": [
+    {
+      "record": "foundation-global-validation",
+      "path": "docs/plans/completed/foundation-global-bootstrap/reports/foundation-global-validation.md",
+      "sha256": "5a9b90af517ae6a1508f11d0b2092e635036f435772ab81faff39d2525958808"
+    },
+    {
+      "record": "foundation-regional-validation",
+      "path": "docs/plans/completed/foundation-regional-core/reports/foundation-regional-validation.md",
+      "sha256": "d786f6f713ded007e8a97317ff619a3dbb1fdaa7e0b4b875a683c9b5b5ecf623"
+    },
+    {
+      "record": "foundation-cluster-validation",
+      "path": "docs/plans/completed/foundation-platform-cluster/reports/foundation-cluster-validation.md",
+      "sha256": "79312846eefb40dfab8d747bc0bc8a8b6e9764176853e67366f5a08031788a97"
+    },
+    {
+      "record": "foundation-bootstrap-validation",
+      "path": "docs/plans/completed/foundation-platform-bootstrap/reports/foundation-bootstrap-validation.md",
+      "sha256": "6dd13e79241516ac76bb10349736345e041d74cbe395ea8e238ee946e2d7cfeb"
+    },
+    {
+      "record": "foundation-bookinfo-validation",
+      "path": "docs/plans/completed/foundation-bookinfo/reports/foundation-bookinfo-validation.md",
+      "sha256": "5c4ee858c9742b4cb9e93ad56746b432fc781a4da3c4147bed2843eccc77ce73"
+    },
+    {
+      "record": "chart-relocation",
+      "path": "docs/plans/completed/chart-defaults-overrides/reports/chart-relocation.md",
+      "sha256": "5526667b75379236f49c2e783a43a77ba13b8ae7b197bdceb61c9000d81466c9"
+    },
+    {
+      "record": "chart-defaults-overrides",
+      "path": "docs/plans/completed/chart-defaults-overrides/plan.md",
+      "sha256": "05f0e2d0e73bc3ad30571db8effc9e0df80fd5a94ad7ad4dfd45136f764fba89"
+    }
+  ],
+  "report_scope": "These report hashes identify the summaries used for validation.md. Full reports, implementation/source manifests and private cloud logs are not bundled. The selected observations below are excerpts, not a complete attempt history.",
+  "workflow_observations": [
+    {
+      "run_id": "37006458750-1",
+      "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37006458750",
+      "source_revision": "2fa53c755632b1de65cb6f95a035e3afbcfa2660",
+      "inputs": {
+        "target_mode": "public",
+        "target_url": "https://bookinfo.demo.anhquach.dev/productpage",
+        "test_scenario": "bookinfo.js",
+        "total_vus": "20",
+        "duration_seconds": "60",
+        "runners": "2"
+      },
+      "productpage_requests_and_limits": {
+        "cpu": "1000m",
+        "memory": "1024Mi"
+      },
+      "workflow_conclusion": "success",
+      "runners": [
+        {
+          "pod": "k6-37006458750-1-1-4sf27",
+          "checks": 3125,
+          "success_pct": 100.0,
+          "requests_per_second": 51.949386,
+          "p95": "288.71ms"
+        },
+        {
+          "pod": "k6-37006458750-1-2-sb5lw",
+          "checks": 2970,
+          "success_pct": 100.0,
+          "requests_per_second": 49.405757,
+          "p95": "295.43ms"
+        }
+      ],
+      "approximate_combined_requests_per_second": 101.355143,
+      "cleanup_verified": true,
+      "source_evidence": {
+        "file": "baseline-1000m-public-20/metrics-summary.json",
+        "sha256": "98e53f7310c5a3e2d2bbc00443aa2a5e0b961a6c8b1f6fc1b281a8a29ba65d38"
+      },
+      "limits": [
+        "One short capacity sample; not sustained capacity.",
+        "Native latency verdicts are per runner.",
+        "Grafana observations used Admin and the former custom dashboard; restored upstream source is not yet reconciled."
+      ]
+    },
+    {
+      "run_id": "37006993089-1",
+      "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37006993089",
+      "source_revision": "2fa53c755632b1de65cb6f95a035e3afbcfa2660",
+      "inputs": {
+        "target_mode": "internal",
+        "target_url": "http://productpage.bookinfo.svc.cluster.local/productpage",
+        "test_scenario": "bookinfo.js",
+        "total_vus": "20",
+        "duration_seconds": "60",
+        "runners": "2"
+      },
+      "productpage_requests_and_limits": {
+        "cpu": "1000m",
+        "memory": "1024Mi"
+      },
+      "workflow_conclusion": "success",
+      "runners": [
+        {
+          "pod": "k6-37006993089-1-1-b5t2k",
+          "checks": 2641,
+          "success_pct": 100.0,
+          "requests_per_second": 43.907951,
+          "p95": "353.04ms"
+        },
+        {
+          "pod": "k6-37006993089-1-2-lxhs8",
+          "checks": 2803,
+          "success_pct": 100.0,
+          "requests_per_second": 46.642283,
+          "p95": "349.97ms"
+        }
+      ],
+      "approximate_combined_requests_per_second": 90.55023399999999,
+      "cleanup_verified": true,
+      "source_evidence": {
+        "file": "baseline-1000m-internal-20/metrics-summary.json",
+        "sha256": "f8e4c8e56179c9addd0c44bce1c038689efba904830e0b7039ef8011529469c8"
+      },
+      "limits": [
+        "One short capacity sample; not sustained capacity.",
+        "Native latency verdicts are per runner.",
+        "Grafana observations used Admin and the former custom dashboard; restored upstream source is not yet reconciled."
+      ]
+    },
+    {
+      "run_id": "37007994169-1",
+      "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37007994169",
+      "source_revision": "2fa53c755632b1de65cb6f95a035e3afbcfa2660",
+      "inputs": {
+        "target_mode": "internal",
+        "target_url": "http://productpage.bookinfo.svc.cluster.local/productpage",
+        "test_scenario": "bookinfo.js",
+        "total_vus": "40",
+        "duration_seconds": "60",
+        "runners": "2"
+      },
+      "productpage_requests_and_limits": {
+        "cpu": "1000m",
+        "memory": "1024Mi"
+      },
+      "workflow_conclusion": "success",
+      "runners": [
+        {
+          "pod": "k6-37007994169-1-1-rl88v",
+          "checks": 3625,
+          "success_pct": 100.0,
+          "requests_per_second": 60.172548,
+          "p95": "771.39ms"
+        },
+        {
+          "pod": "k6-37007994169-1-2-spwkr",
+          "checks": 2520,
+          "success_pct": 100.0,
+          "requests_per_second": 41.874586,
+          "p95": "845.52ms"
+        }
+      ],
+      "approximate_combined_requests_per_second": 102.047134,
+      "cleanup_verified": true,
+      "source_evidence": {
+        "file": "baseline-1000m-internal-40/metrics-summary.json",
+        "sha256": "3857ff9dc40ac22278eba8071be5039e739b6c1906dffc50009f5b92886e6375"
+      },
+      "limits": [
+        "One short capacity sample; not sustained capacity.",
+        "Native latency verdicts are per runner.",
+        "Grafana observations used Admin and the former custom dashboard; restored upstream source is not yet reconciled."
+      ]
+    },
+    {
+      "run_id": "37008439861-1",
+      "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37008439861",
+      "source_revision": "2fa53c755632b1de65cb6f95a035e3afbcfa2660",
+      "inputs": {
+        "target_mode": "internal",
+        "target_url": "http://productpage.bookinfo.svc.cluster.local/productpage",
+        "test_scenario": "bookinfo.js",
+        "total_vus": "80",
+        "duration_seconds": "60",
+        "runners": "2"
+      },
+      "productpage_requests_and_limits": {
+        "cpu": "1000m",
+        "memory": "1024Mi"
+      },
+      "workflow_conclusion": "failure",
+      "runners": [
+        {
+          "pod": "k6-37008439861-1-1-bbdq9",
+          "checks": 2830,
+          "success_pct": 100.0,
+          "requests_per_second": 46.835312,
+          "p95": "1.49s"
+        },
+        {
+          "pod": "k6-37008439861-1-2-p5lhj",
+          "checks": 3321,
+          "success_pct": 100.0,
+          "requests_per_second": 54.978324,
+          "p95": "1.21s"
+        }
+      ],
+      "approximate_combined_requests_per_second": 101.813636,
+      "cleanup_verified": true,
+      "source_evidence": {
+        "file": "baseline-1000m-internal-80/metrics-summary.json",
+        "sha256": "42d3ac4361124bf5284e16eecd4928d1e620cff61587456b1ca3948a56eb3207"
+      },
+      "limits": [
+        "One short capacity sample, not a sustained capacity limit.",
+        "Native runner p95 exceeded the accepted one-second criterion; every HTTP-200 check passed."
+      ]
+    }
+  ],
+  "lifecycle_observations": {
+    "runtime_revision": "2fa53c755632b1de65cb6f95a035e3afbcfa2660",
+    "runs": [
+      {
+        "github_run_id": "37007417162",
+        "run_id": "37007417162-1",
+        "inputs": {
+          "target_mode": "internal",
+          "target_url": "http://productpage.bookinfo.svc.cluster.local/productpage",
+          "test_scenario": "bookinfo.js",
+          "total_vus": "20",
+          "duration_seconds": "180",
+          "runners": "2"
+        },
+        "roots": [
+          {
+            "kind": "TestRun",
+            "name": "k6-37007417162-1",
+            "uid": "f862ce01-ca6e-447b-b23c-8f3847cfad79"
+          },
+          {
+            "kind": "ConfigMap",
+            "name": "k6-script-37007417162-1",
+            "uid": "21d938a7-8a26-4549-b82e-fac3343689fa"
+          }
+        ]
+      },
+      {
+        "github_run_id": "37007421602",
+        "run_id": "37007421602-1",
+        "inputs": {
+          "target_mode": "public",
+          "target_url": "https://bookinfo.demo.anhquach.dev/productpage",
+          "test_scenario": "bookinfo.js",
+          "total_vus": "20",
+          "duration_seconds": "180",
+          "runners": "2"
+        },
+        "roots": [
+          {
+            "kind": "TestRun",
+            "name": "k6-37007421602-1",
+            "uid": "10d71436-030d-423b-afcb-78cdadc58ea2"
+          },
+          {
+            "kind": "ConfigMap",
+            "name": "k6-script-37007421602-1",
+            "uid": "9d45bf04-ff15-458c-85f4-a211eea42e26"
+          }
+        ]
+      }
+    ],
+    "normal_cancel_with_both_runs_active": true,
+    "peer_roots_and_running_runners_preserved": true,
+    "force_stopped_workflow_left_live_testrun_and_runners": true,
+    "original_uid_recovery": {
+      "cleanup_status": "verified",
+      "execution_status": "incomplete",
+      "reason": "Cleanup-only recovery; original execution outcome retained in its GitHub run",
+      "remaining": []
+    },
+    "repeat_recovery": {
+      "cleanup_status": "verified",
+      "execution_status": "incomplete",
+      "reason": "Cleanup-only recovery; original execution outcome retained in its GitHub run",
+      "remaining": []
+    },
+    "final_original_objects_absent": true,
+    "limits": [
+      "Does not establish immediate cancellation stop latency.",
+      "Recovery used independent maintainer credentials and the original root UIDs."
+    ],
+    "source_evidence": [
+      {
+        "file": "cancellation-recovery/dispatches.json",
+        "sha256": "73b0dd75089301faf17ae2eab0dc694c00d8fd6bc5e0c2959ecec0d9c15ba560"
+      },
+      {
+        "file": "cancellation-recovery/normal-cleaned-peer-running.json",
+        "sha256": "3e500bf085b750fd2889cc874c1b897ae8356695264a8f06a7d1d5436d89809a"
+      },
+      {
+        "file": "cancellation-recovery/leftovers-before-recovery.json",
+        "sha256": "3e500bf085b750fd2889cc874c1b897ae8356695264a8f06a7d1d5436d89809a"
+      },
+      {
+        "file": "cancellation-recovery/recovery.json",
+        "sha256": "42736d5f61e1ed70435b04e3d00deb7e2ed0eb4af08e1cc2fb32cadf9078ad28"
+      },
+      {
+        "file": "cancellation-recovery/repeat-recovery.json",
+        "sha256": "42736d5f61e1ed70435b04e3d00deb7e2ed0eb4af08e1cc2fb32cadf9078ad28"
+      },
+      {
+        "file": "cancellation-recovery/verification.json",
+        "sha256": "66c077cc2a229b4d9cffe8119dd9846f5317177a2b36933b45b2e2624cbbeb6e"
+      }
+    ]
+  },
+  "demo_package": {
+    "recording_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+    "source_of_observations": "GitHub Actions run/job API, rendered run Summaries, supplied recordings, local media checks and read-only maintainer/Viewer observations.",
+    "videos": [
+      {
+        "file": "01-successful-load-test.mp4",
+        "sha256": "f1c3bb6fc365574dd1affa9693c471b1b34bed80ce1f504f2fa54ec8a5a34385",
+        "bytes": 35309658,
+        "duration_seconds": 301.933333,
+        "repository_path": "docs/videos/01-successful-load-test.mp4"
+      },
+      {
+        "file": "02-input-validation.mp4",
+        "sha256": "70384727a6b46c64c067054f836e4aa289f05e0fa5af667233646d068ce0b63c",
+        "bytes": 31279696,
+        "duration_seconds": 225.816667,
+        "repository_path": "docs/videos/02-input-validation.mp4"
+      },
+      {
+        "file": "03-http-failure-cleanup.mp4",
+        "sha256": "20e6e1cf0309e462e8d08071631c0240e9fb28bda4508ad08689ca9d2d74dd52",
+        "bytes": 45937027,
+        "duration_seconds": 335.1,
+        "repository_path": "docs/videos/03-http-failure-cleanup.mp4"
+      },
+      {
+        "file": "04-cancel-run-preserve-peer.mp4",
+        "sha256": "25a0fbadfa08346d0cae5eadfc20090ad228a3315c0147fc2544d964533d553a",
+        "bytes": 60375777,
+        "duration_seconds": 457.15,
+        "repository_path": "docs/videos/04-cancel-run-preserve-peer.mp4"
+      }
+    ],
+    "recorded_runs": [
+      {
+        "run_id": "37054796485-1",
+        "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37054796485",
+        "workflow_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "workload_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "scenario": "bookinfo.js",
+        "target": "https://bookinfo.demo.anhquach.dev/productpage",
+        "total_vus_seconds_runners": "20 / 60 / 2",
+        "execution": "succeeded",
+        "cleanup": "verified",
+        "measurement_start": "2026-10-02T19:34:07Z",
+        "measurement_end": "2026-10-02T19:35:20.326950+00:00",
+        "interval_precision": "estimated from starter command completion; runner start is not individually proven",
+        "grafana_url": "https://grafana.demo.anhquach.dev/d/a3b2aaa8-bb66-4008-a1d8-16c49afedbf0?var-testid=37054796485-1&from=1790969587000&to=1790969725326"
+      },
+      {
+        "run_id": "37058145157-1",
+        "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37058145157",
+        "workflow_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "workload_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "scenario": "bookinfo.js",
+        "target": "https://bookinfo.demo.anhquach.dev/load-test-nonexistent",
+        "total_vus_seconds_runners": "20 / 60 / 2",
+        "execution": "failed",
+        "cleanup": "verified",
+        "measurement_start": "2026-10-02T20:05:44Z",
+        "measurement_end": "2026-10-02T20:06:50.254046+00:00",
+        "interval_precision": "estimated from starter command completion; runner start is not individually proven",
+        "grafana_url": "https://grafana.demo.anhquach.dev/d/a3b2aaa8-bb66-4008-a1d8-16c49afedbf0?var-testid=37058145157-1&from=1790971484000&to=1790971615254"
+      },
+      {
+        "run_id": "37060852199-1",
+        "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37060852199",
+        "workflow_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "workload_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "scenario": "bookinfo.js",
+        "target": "https://bookinfo.demo.anhquach.dev/productpage",
+        "total_vus_seconds_runners": "20 / 300 / 2",
+        "execution": "cancelled",
+        "cleanup": "verified",
+        "measurement_start": "2026-10-02T20:30:26Z",
+        "measurement_end": "unavailable",
+        "interval_precision": "estimated from starter command completion; runner start is not individually proven",
+        "grafana_url": null
+      },
+      {
+        "run_id": "37060868805-1",
+        "url": "https://github.com/anhqqt/geo-lt-demo/actions/runs/37060868805",
+        "workflow_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "workload_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+        "scenario": "bookinfo.js",
+        "target": "https://bookinfo.demo.anhquach.dev/productpage",
+        "total_vus_seconds_runners": "20 / 300 / 2",
+        "execution": "succeeded",
+        "cleanup": "verified",
+        "measurement_start": "2026-10-02T20:30:56Z",
+        "measurement_end": "2026-10-02T20:36:05.774499+00:00",
+        "interval_precision": "estimated from starter command completion; runner start is not individually proven",
+        "grafana_url": "https://grafana.demo.anhquach.dev/d/a3b2aaa8-bb66-4008-a1d8-16c49afedbf0?var-testid=37060868805-1&from=1790972996000&to=1790973370774"
+      }
+    ],
+    "numeric_rejection_runs": [
+      "37056876859",
+      "37056960035",
+      "37057021912",
+      "37057079403",
+      "37057132495"
+    ],
+    "unsupported_protocol_check": {
+      "run_id": "37064485458",
+      "target_url": "ftp://bookinfo.demo.anhquach.dev/productpage",
+      "workflow_revision": "cc64599b36333d2ef189dbc0c37fc3ba7b954c1d",
+      "validate": "failure",
+      "load": "skipped",
+      "recorded_in_video": false
+    },
+    "viewer_readback": {
+      "role": null,
+      "isGrafanaAdmin": false,
+      "canEdit": false,
+      "runs": [
+        {
+          "run_id": "37054796485-1",
+          "status": "success",
+          "series": 1,
+          "samples": 11
+        },
+        {
+          "run_id": "37058145157-1",
+          "status": "success",
+          "series": 1,
+          "samples": 11
+        },
+        {
+          "run_id": "37060868805-1",
+          "status": "success",
+          "series": 1,
+          "samples": 59
+        }
+      ],
+      "prometheus_retention": [
+        "10d"
+      ],
+      "organization_roles": [
+        "Viewer"
+      ]
+    },
+    "cleanup_readback": {
+      "observed_at": "2026-10-02T21:05:51.761788+00:00",
+      "generator_testruns_jobs_pods_services": 0,
+      "original_run_configmaps_absent": true,
+      "bookinfo_and_monitoring_ready": true,
+      "monitoring_pvcs": "Bound"
+    },
+    "limits": [
+      "The videos use maintainer Kubernetes access and a Grafana session with editing controls. Separate Viewer checks prove read access.",
+      "Run A has no observed measurement end or fixed-time results link.",
+      "Browser playback and full decoding passed; contact sheets were visually sampled every 20 seconds. This is not a claim of frame-by-frame privacy review.",
+      "The user accepted the package and private-repository access handoff; recipient-account playback was not independently run.",
+      "Final foundation teardown was not run. It and the additional unrun lifecycle checks are outside the accepted final demo scope; no passing result is claimed for them."
+    ],
+    "video_directory": "docs/videos/",
+    "submission_acceptance": {
+      "status": "accepted",
+      "accepted_revision": "e72e2c5191ae5d7084103c5e88c8dbbe51ba31aa",
+      "method": "User approval in response to the final package and private-repository access confirmation request",
+      "original_response": "Tôi duyệt",
+      "private_repository_access_handoff": "human-approved",
+      "recipient_account_playback": "not independently run",
+      "scope": "Submission package and video slice; additional unrun lifecycle checks are outside final demo completion"
+    }
+  }
+}
