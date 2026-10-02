@@ -1,0 +1,32 @@
+fullnameOverride: "${release_name}"
+
+namespace:
+  create: false
+
+rbac:
+  namespaced: false
+
+manager:
+  replicas: 1
+  serviceAccount:
+    name: k6-operator-controller
+  env:
+    - name: WATCH_NAMESPACE
+      value: "${runner_namespace}"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+nodeSelector:
+  workload: main
+tolerations: []
+
+service:
+  enabled: false
+metrics:
+  serviceMonitor:
+    enabled: false

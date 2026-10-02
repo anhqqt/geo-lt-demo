@@ -1,0 +1,33 @@
+cloudProvider: aws
+awsRegion: "${aws_region}"
+
+autoDiscovery:
+  clusterName: "${cluster_name}"
+
+# Match the EKS minor version; chart 9.59.0 defaults to 1.35.
+image:
+  tag: v1.36.1
+
+fullnameOverride: cluster-autoscaler
+
+rbac:
+  create: true
+  serviceAccount:
+    create: true
+    name: cluster-autoscaler
+
+replicaCount: 1
+nodeSelector:
+  workload: main
+tolerations: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 300Mi
+  limits:
+    cpu: 500m
+    memory: 600Mi
+
+serviceMonitor:
+  enabled: false

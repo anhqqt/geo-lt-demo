@@ -1,0 +1,48 @@
+provider:
+  name: aws
+
+env:
+  - name: AWS_REGION
+    value: "${aws_region}"
+
+fullnameOverride: external-dns
+serviceAccount:
+  create: true
+  name: external-dns
+
+sources:
+  - ingress
+annotationPrefix: external-dns.kubernetes.io/
+domainFilters:
+  - "${dns_zone_name}"
+extraArgs:
+  zone-id-filter:
+    - "${dns_zone_id}"
+  aws-zone-type: public
+  ingress-class:
+    - alb
+  exclude-record-types:
+    - AAAA
+
+policy: sync
+registry: txt
+txtOwnerId: "${cluster_name}"
+txtPrefix: "%%{record_type}-"
+
+replicaCount: 1
+deploymentStrategy:
+  type: Recreate
+nodeSelector:
+  workload: main
+tolerations: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+serviceMonitor:
+  enabled: false

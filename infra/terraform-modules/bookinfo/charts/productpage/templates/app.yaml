@@ -1,0 +1,7 @@
+{{ include "bookinfo.deployment" . }}
+---
+{{ include "bookinfo.service" . }}
+{{- if .Values.ingress.enabled }}
+---
+{{ include "bookinfo.ingress" . }}
+{{- end }}

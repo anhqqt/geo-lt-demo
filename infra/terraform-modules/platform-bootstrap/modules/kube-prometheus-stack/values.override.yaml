@@ -1,0 +1,194 @@
+fullnameOverride: "${release_name}"
+
+defaultRules:
+  create: false
+alertmanager:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubernetesServiceMonitors:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubelet:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+coreDns:
+  enabled: false
+kubeDns:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheusOperator:
+  admissionWebhooks:
+    enabled: false
+  tls:
+    enabled: false
+  nodeSelector:
+    workload: obser
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: obser
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  prometheusConfigReloader:
+    resources:
+      requests:
+        cpu: 25m
+        memory: 32Mi
+      limits:
+        cpu: 100m
+        memory: 64Mi
+
+prometheus:
+  ingress:
+    enabled: false
+  service:
+    type: ClusterIP
+  prometheusSpec:
+    replicas: 1
+    enableRemoteWriteReceiver: true
+    nodeSelector:
+      workload: obser
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: obser
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 500m
+        memory: 2Gi
+      limits:
+        cpu: "1"
+        memory: 4Gi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+grafana:
+  fullnameOverride: "${release_name}-grafana"
+  replicas: 1
+  deploymentStrategy:
+    type: Recreate
+  defaultDashboardsEnabled: false
+  testFramework:
+    enabled: false
+  sidecar:
+    dashboards:
+      enabled: false
+    datasources:
+      enabled: false
+  ingress:
+    enabled: ${grafana_ingress_enable}
+%{ if grafana_ingress_enable ~}
+    ingressClassName: alb
+    path: /
+    pathType: Prefix
+    hosts:
+      - "${grafana_ingress_host}"
+    annotations:
+      ${indent(6, yamlencode(grafana_ingress_annotations))}
+%{ endif ~}
+  service:
+    type: ClusterIP
+  nodeSelector:
+    workload: obser
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: obser
+      effect: NoSchedule
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  initChownData:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: k6
+          orgId: 1
+          folder: k6
+          type: file
+          disableDeletion: false
+          allowUiUpdates: true
+          options:
+            path: /var/lib/grafana/dashboards/k6
+  dashboards:
+    k6:
+      k6-prometheus-native-histograms:
+        gnetId: 18030
+        revision: 8
+        curlOptions: -sSfL
+        datasource:
+          - name: DS_PROMETHEUS
+            value: prometheus
+  downloadDashboards:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          uid: prometheus
+          type: prometheus
+          access: proxy
+          url: "http://${release_name}-prometheus.${namespace}.svc.cluster.local:9090"
+          isDefault: true
+          editable: false
+  grafana.ini:
+%{ if grafana_ingress_enable ~}
+    server:
+      root_url: "https://${grafana_ingress_host}/"
+    security:
+      cookie_secure: true
+%{ endif ~}
+    auth.anonymous:
+      enabled: false
+    users:
+      allow_sign_up: false
+      allow_org_create: false
+      auto_assign_org_role: Viewer

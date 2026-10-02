@@ -1,0 +1,21 @@
+fullnameOverride: "${release_name}"
+
+serviceAccount:
+  create: true
+  name: "${release_name}"
+
+replicas: 1
+nodeSelector:
+  workload: main
+tolerations: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 500m
+    memory: 400Mi
+
+serviceMonitor:
+  enabled: false

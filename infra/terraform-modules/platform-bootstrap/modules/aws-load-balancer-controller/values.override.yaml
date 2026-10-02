@@ -1,0 +1,30 @@
+clusterName: "${cluster_name}"
+region: "${aws_region}"
+vpcId: "${vpc_id}"
+fullnameOverride: aws-load-balancer-controller
+serviceAccount:
+  create: true
+  name: alb-controller
+replicaCount: 1
+nodeSelector:
+  workload: main
+tolerations: []
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+enableServiceMutatorWebhook: false
+enableShield: false
+enableWaf: false
+enableWafv2: false
+controllerConfig:
+  featureGates:
+    ALBGatewayAPI: false
+    NLBGatewayAPI: false
+    GatewayListenerSet: false
+    EnableServiceController: false
+serviceMonitor:
+  enabled: false

@@ -1,0 +1,47 @@
+# Default values for this chart. Override only the settings needed by the deployment.
+replicaCount: 1
+revisionHistoryLimit: 2
+progressDeadlineSeconds: 600
+deploymentStrategy:
+  type: Recreate
+imagePullPolicy: IfNotPresent
+containerPort: 9080
+service:
+  port: 9080
+nodeSelector:
+  workload: main
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 5
+  timeoutSeconds: 2
+  failureThreshold: 36
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+image: registry.istio.io/release/examples-bookinfo-ratings-v1:1.20.3@sha256:aad8f7bb46664704eecd92d9ebe8563e3e41571e2301f593cc521301b14ae51d
+environment:
+  SERVICE_VERSION: v1
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu:
+    memory: 128Mi
