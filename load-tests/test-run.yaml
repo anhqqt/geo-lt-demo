@@ -1,0 +1,133 @@
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: ""
+  namespace: ""
+  labels:
+    load-test/run-id: ""
+    app.kubernetes.io/managed-by: load-test-workflow
+  annotations:
+    load-test/repository: ""
+    load-test/workflow-sha: ""
+    load-test/workload-sha: ""
+    load-test/creation-token: ""
+spec:
+  parallelism: 0
+  script:
+    configMap:
+      name: ""
+      file: ""
+  args:
+    - --out
+    - experimental-prometheus-rw
+  runner:
+    image: ghcr.io/grafana/k6-operator:runner-v1.6.0@sha256:e32a05d94def8b5a9429fb90c6f5b8b0f218b4411eda82f709ec5337e4095f92
+    serviceAccountName: ""
+    automountServiceAccountToken: "false"
+    nodeSelector:
+      workload: load-test
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: load-test
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    metadata:
+      labels:
+        load-test/run-id: ""
+        app.kubernetes.io/managed-by: load-test-workflow
+    env:
+      - name: TOTAL_VUS
+        value: ""
+      - name: DURATION_SECONDS
+        value: ""
+      - name: TARGET_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
+        value: "true"
+      - name: K6_PROMETHEUS_RW_PUSH_INTERVAL
+        value: 5s
+      - name: K6_PROMETHEUS_RW_STALE_MARKERS
+        value: "true"
+  initializer:
+    image: ghcr.io/grafana/k6-operator:runner-v1.6.0@sha256:e32a05d94def8b5a9429fb90c6f5b8b0f218b4411eda82f709ec5337e4095f92
+    serviceAccountName: ""
+    automountServiceAccountToken: "false"
+    nodeSelector:
+      workload: load-test
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: load-test
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    metadata:
+      labels:
+        load-test/run-id: ""
+        app.kubernetes.io/managed-by: load-test-workflow
+    env:
+      - name: TOTAL_VUS
+        value: ""
+      - name: DURATION_SECONDS
+        value: ""
+      - name: TARGET_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
+        value: "true"
+      - name: K6_PROMETHEUS_RW_PUSH_INTERVAL
+        value: 5s
+      - name: K6_PROMETHEUS_RW_STALE_MARKERS
+        value: "true"
+  starter:
+    image: ghcr.io/grafana/k6-operator:starter-v1.6.0@sha256:b97b8e32867a553b7f866acd1e0a2ac91af81480c04c12a6ee55df3ae99d2ad6
+    serviceAccountName: ""
+    automountServiceAccountToken: "false"
+    nodeSelector:
+      workload: load-test
+    tolerations:
+      - key: dedicated
+        operator: Equal
+        value: load-test
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+    metadata:
+      labels:
+        load-test/run-id: ""
+        app.kubernetes.io/managed-by: load-test-workflow
+    env:
+      - name: TOTAL_VUS
+        value: ""
+      - name: DURATION_SECONDS
+        value: ""
+      - name: TARGET_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: ""
+      - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
+        value: "true"
+      - name: K6_PROMETHEUS_RW_PUSH_INTERVAL
+        value: 5s
+      - name: K6_PROMETHEUS_RW_STALE_MARKERS
+        value: "true"

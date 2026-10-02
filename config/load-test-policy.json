@@ -1,0 +1,19 @@
+{
+  "inputs": {
+    "total_vus": {
+      "min": 20,
+      "max": 1000,
+      "default": 20
+    },
+    "duration_seconds": {
+      "min": 60,
+      "max": 18000,
+      "default": 60
+    },
+    "runners": {
+      "min": 2,
+      "max": 10,
+      "default": 2
+    }
+  }
+}

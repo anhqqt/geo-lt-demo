@@ -1,0 +1,262 @@
+name: Load test
+"on":
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: Full HTTP or HTTPS target URL including path
+        type: string
+        default: http://productpage.bookinfo.svc.cluster.local/productpage
+        required: true
+      test_scenario:
+        description: Test script from load-tests/
+        type: choice
+        options:
+          - bookinfo.js
+        default: bookinfo.js
+        required: true
+      total_vus:
+        description: total vus
+        type: string
+        default: "20"
+        required: true
+      duration_seconds:
+        description: duration seconds
+        type: string
+        default: "60"
+        required: true
+      runners:
+        description: runners
+        type: string
+        default: "2"
+        required: true
+permissions: {}
+env:
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_CLUSTER_NAME: ${{ vars.AWS_CLUSTER_NAME }}
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  LOAD_TEST_NAMESPACE: ${{ vars.LOAD_TEST_NAMESPACE }}
+  LOAD_TEST_SERVICE_ACCOUNT: ${{ vars.LOAD_TEST_SERVICE_ACCOUNT }}
+  PROMETHEUS_REMOTE_WRITE_URL: ${{ vars.PROMETHEUS_REMOTE_WRITE_URL }}
+  GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+  LOAD_TEST_REPOSITORY: ${{ vars.LOAD_TEST_REPOSITORY }}
+  LOAD_TEST_REPOSITORY_ID: ${{ vars.LOAD_TEST_REPOSITORY_ID }}
+  LOAD_TEST_REPOSITORY_OWNER_ID: ${{ vars.LOAD_TEST_REPOSITORY_OWNER_ID }}
+  LOAD_TEST_DEFAULT_BRANCH: ${{ vars.LOAD_TEST_DEFAULT_BRANCH }}
+jobs:
+  validate:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      job_timeout_minutes: ${{ steps.request.outputs.job_timeout_minutes }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Validate inputs and calculate run timeout
+        id: request
+        run: |
+          python3 scripts/load-test-request-validation.py \
+            --event "$GITHUB_EVENT_PATH" \
+            --policy config/load-test-policy.json \
+            --output "$RUNNER_TEMP/load-test/validation-result.json"
+      - name: Report rejected request
+        if: ${{ failure() }}
+        run: |
+          python3 scripts/load-test-summary.py \
+            --request "$RUNNER_TEMP/load-test/validation-result.json" \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --outcome "$RUNNER_TEMP/load-test/outcome.json" \
+            --output "$GITHUB_STEP_SUMMARY"
+  load:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    needs: validate
+    timeout-minutes: ${{ fromJSON(needs.validate.outputs.job_timeout_minutes) }}
+    env:
+      KUBECONFIG: /tmp/geo-lt-kubeconfig
+      KUBE_CONTEXT: geo-lt-run
+    steps:
+      - name: Start preparation budget
+        run: |
+          python3 - <<'PY'
+          import json, os, time
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          p = Path(os.environ["RUNNER_TEMP"]) / "load-test"
+          p.mkdir(mode=0o700, exist_ok=True)
+          (p / "timing.json").write_text(
+              json.dumps(
+                  {
+                      "job_start_monotonic": time.monotonic(),
+                      "job_start_utc": datetime.now(timezone.utc).isoformat(),
+                  }
+              )
+          )
+          PY
+      - name: Checkout source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: 3.12.15
+      - name: Revalidate pinned source and inputs
+        id: request
+        run: |
+          python3 scripts/load-test-request-validation.py \
+            --event "$GITHUB_EVENT_PATH" \
+            --policy config/load-test-policy.json \
+            --output "$RUNNER_TEMP/load-test/validation-result.json"
+      - name: Set up kubectl
+        uses: Azure/setup-kubectl@829323503d1be3d00ca8346e5391ca0b07a9ab0d # v5.1.0
+        with:
+          version: "v1.36.5"
+      - name: Record kubectl and preinstalled AWS CLI versions
+        run: |
+          kubectl version --client
+          aws --version
+      - name: Assume the scoped workflow role
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
+          role-duration-seconds: 21600
+          role-session-name: load-test-${{ github.run_id }}-${{ github.run_attempt }}
+          action-timeout-s: 120
+          retry-max-attempts: 3
+      - name: Show AWS caller identity
+        run: aws sts get-caller-identity
+      - name: Configure EKS exec authentication
+        run: |
+          aws eks update-kubeconfig \
+            --name "$AWS_CLUSTER_NAME" \
+            --region "$AWS_REGION" \
+            --alias "$KUBE_CONTEXT" \
+            --kubeconfig "$KUBECONFIG"
+      - name: Prepare run identities
+        run: |
+          python scripts/load-test-lifecycle.py prepare \
+            --request "$RUNNER_TEMP/load-test/validation-result.json" \
+            --timing "$RUNNER_TEMP/load-test/timing.json" \
+            --record "$RUNNER_TEMP/load-test/run-record.json"
+
+          jq -r '
+            "RUN_ID=\(.run_id)",
+            "CONFIGMAP_NAME=k6-script-\(.run_id)",
+            "TESTRUN_NAME=k6-\(.run_id)",
+            "WORKFLOW_SHA=\(.workflow_sha)",
+            "WORKLOAD_SHA=\(.workload_sha)",
+            "TEST_SCENARIO=\(.test_scenario)",
+            "TARGET_URL=\(.target_url)",
+            "TOTAL_VUS=\(.total_vus)",
+            "DURATION_SECONDS=\(.duration_seconds)",
+            "RUNNERS=\(.runners)"
+          ' "$RUNNER_TEMP/load-test/validation-result.json" >> "$GITHUB_ENV"
+          jq -r '"CREATION_TOKEN=\(.creation_token)"' \
+            "$RUNNER_TEMP/load-test/run-record.json" >> "$GITHUB_ENV"
+      - name: Generate ConfigMap from selected script
+        run: |
+          kubectl create configmap "$CONFIGMAP_NAME" \
+            --namespace "$LOAD_TEST_NAMESPACE" \
+            --from-file="$TEST_SCENARIO=load-tests/$TEST_SCENARIO" \
+            --dry-run=client -o yaml > load-tests/configmap.generated.yaml
+      - name: Render run metadata and TestRun
+        uses: mikefarah/yq@504fc38780cc46be8444ea1b72fb55919fc0bfb0 # v4.54.1
+        with:
+          cmd: |
+            yq -i '
+              .metadata.labels."load-test/run-id" = strenv(RUN_ID) |
+              .metadata.labels."app.kubernetes.io/managed-by" = "load-test-workflow" |
+              .metadata.annotations."load-test/repository" = strenv(LOAD_TEST_REPOSITORY) |
+              .metadata.annotations."load-test/workflow-sha" = strenv(WORKFLOW_SHA) |
+              .metadata.annotations."load-test/workload-sha" = strenv(WORKLOAD_SHA) |
+              .metadata.annotations."load-test/creation-token" = strenv(CREATION_TOKEN)
+            ' load-tests/configmap.generated.yaml
+
+            yq '
+              .metadata.name = strenv(TESTRUN_NAME) |
+              .metadata.namespace = strenv(LOAD_TEST_NAMESPACE) |
+              .metadata.labels."load-test/run-id" = strenv(RUN_ID) |
+              .metadata.annotations."load-test/repository" = strenv(LOAD_TEST_REPOSITORY) |
+              .metadata.annotations."load-test/workflow-sha" = strenv(WORKFLOW_SHA) |
+              .metadata.annotations."load-test/workload-sha" = strenv(WORKLOAD_SHA) |
+              .metadata.annotations."load-test/creation-token" = strenv(CREATION_TOKEN) |
+              .spec.parallelism = env(RUNNERS) |
+              .spec.script.configMap.name = strenv(CONFIGMAP_NAME) |
+              .spec.script.configMap.file = strenv(TEST_SCENARIO) |
+              .spec.args += ["--tag", "run_id=" + strenv(RUN_ID), "--tag", "testid=" + strenv(RUN_ID)] |
+              (.spec.runner, .spec.initializer, .spec.starter) |= (
+                .serviceAccountName = strenv(LOAD_TEST_SERVICE_ACCOUNT) |
+                .metadata.labels."load-test/run-id" = strenv(RUN_ID) |
+                (.env[] | select(.name == "TOTAL_VUS").value) = strenv(TOTAL_VUS) |
+                (.env[] | select(.name == "DURATION_SECONDS").value) = strenv(DURATION_SECONDS) |
+                (.env[] | select(.name == "TARGET_URL").value) = strenv(TARGET_URL) |
+                (.env[] | select(.name == "K6_PROMETHEUS_RW_SERVER_URL").value) = strenv(PROMETHEUS_REMOTE_WRITE_URL)
+              )
+            ' load-tests/test-run.yaml > load-tests/test-run.generated.yaml
+      - name: Create script ConfigMap
+        run: |
+          create_timeout=$(python scripts/load-test-lifecycle.py attempt \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --kind ConfigMap)
+          timeout --signal=KILL "${create_timeout}s" \
+            kubectl --context "$KUBE_CONTEXT" --namespace "$LOAD_TEST_NAMESPACE" \
+              --request-timeout="${create_timeout}s" create \
+              -f load-tests/configmap.generated.yaml -o json > "$RUNNER_TEMP/load-test/created-configmap.json"
+          python scripts/load-test-lifecycle.py register \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --kind ConfigMap \
+            --created "$RUNNER_TEMP/load-test/created-configmap.json"
+      - name: Create TestRun
+        run: |
+          create_timeout=$(python scripts/load-test-lifecycle.py attempt \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --kind TestRun)
+          timeout --signal=KILL "${create_timeout}s" \
+            kubectl --context "$KUBE_CONTEXT" --namespace "$LOAD_TEST_NAMESPACE" \
+              --request-timeout="${create_timeout}s" create \
+              -f load-tests/test-run.generated.yaml -o json > "$RUNNER_TEMP/load-test/created-test-run.json"
+          python scripts/load-test-lifecycle.py register \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --kind TestRun \
+            --created "$RUNNER_TEMP/load-test/created-test-run.json"
+      - name: Observe run
+        run: |
+          python scripts/load-test-lifecycle.py observe \
+            --request "$RUNNER_TEMP/load-test/validation-result.json" \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --outcome "$RUNNER_TEMP/load-test/outcome.json"
+      - name: Report and clean up original run
+        id: finalize
+        if: ${{ always() && steps.request.outcome == 'success' }}
+        env:
+          WORKFLOW_STATUS: ${{ job.status }}
+        run: |
+          python scripts/load-test-lifecycle.py finalize \
+            --request "$RUNNER_TEMP/load-test/validation-result.json" \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --outcome "$RUNNER_TEMP/load-test/outcome.json" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            --workflow-status "$WORKFLOW_STATUS"
+      - name: Report available outcome
+        if: ${{ always() && steps.finalize.outputs.summary_written != 'true' }}
+        run: |
+          python3 scripts/load-test-summary.py \
+            --request "$RUNNER_TEMP/load-test/validation-result.json" \
+            --record "$RUNNER_TEMP/load-test/run-record.json" \
+            --outcome "$RUNNER_TEMP/load-test/outcome.json" \
+            --output "$GITHUB_STEP_SUMMARY"
+      - name: Remove private kubeconfig
+        if: ${{ always() }}
+        run: rm -f -- "$KUBECONFIG"

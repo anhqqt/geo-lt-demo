@@ -1,0 +1,92 @@
+name: Verify load-test access without load
+'on':
+  workflow_dispatch: {}
+permissions: {}
+env:
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_CLUSTER_NAME: ${{ vars.AWS_CLUSTER_NAME }}
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  LOAD_TEST_NAMESPACE: ${{ vars.LOAD_TEST_NAMESPACE }}
+  LOAD_TEST_SERVICE_ACCOUNT: ${{ vars.LOAD_TEST_SERVICE_ACCOUNT }}
+  PROMETHEUS_REMOTE_WRITE_URL: ${{ vars.PROMETHEUS_REMOTE_WRITE_URL }}
+  GRAFANA_URL: ${{ vars.GRAFANA_URL }}
+  LOAD_TEST_REPOSITORY: ${{ vars.LOAD_TEST_REPOSITORY }}
+  LOAD_TEST_REPOSITORY_ID: ${{ vars.LOAD_TEST_REPOSITORY_ID }}
+  LOAD_TEST_REPOSITORY_OWNER_ID: ${{ vars.LOAD_TEST_REPOSITORY_OWNER_ID }}
+  LOAD_TEST_DEFAULT_BRANCH: ${{ vars.LOAD_TEST_DEFAULT_BRANCH }}
+jobs:
+  validate:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Validate source and deployment fields
+      run: |
+        python3 scripts/load-test-request-validation.py \
+          --source-only \
+          --event "$GITHUB_EVENT_PATH" \
+          --output "$RUNNER_TEMP/load-test/validation-result.json"
+  access:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    needs: validate
+    timeout-minutes: 20
+    env:
+      KUBECONFIG: /tmp/geo-lt-kubeconfig
+      KUBE_CONTEXT: geo-lt-run
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Revalidate pinned source and deployment fields
+      run: |
+        python3 scripts/load-test-request-validation.py \
+          --source-only \
+          --event "$GITHUB_EVENT_PATH" \
+          --output "$RUNNER_TEMP/load-test/validation-result.json"
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: 3.12.15
+    - name: Set up kubectl
+      uses: Azure/setup-kubectl@829323503d1be3d00ca8346e5391ca0b07a9ab0d # v5.1.0
+      with:
+        version: 'v1.36.5'
+    - name: Record kubectl and preinstalled AWS CLI versions
+      run: |
+        kubectl version --client
+        aws --version
+    - name: Assume the scoped workflow role
+      uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+      with:
+        role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+        aws-region: ${{ vars.AWS_REGION }}
+        allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
+        role-duration-seconds: 21600
+        role-session-name: load-test-${{ github.run_id }}-${{ github.run_attempt }}
+        action-timeout-s: 120
+        retry-max-attempts: 3
+    - name: Show AWS caller identity
+      run: aws sts get-caller-identity
+    - name: Configure EKS exec authentication
+      run: |
+        aws eks update-kubeconfig \
+          --name "$AWS_CLUSTER_NAME" \
+          --region "$AWS_REGION" \
+          --alias "$KUBE_CONTEXT" \
+          --kubeconfig "$KUBECONFIG"
+    - name: Verify permissions and token renewal without load
+      run: python scripts/verify-load-test-access.py
+    - name: Remove private kubeconfig
+      if: ${{ always() }}
+      run: rm -f -- "$KUBECONFIG"
