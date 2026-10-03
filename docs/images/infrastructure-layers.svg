@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 910" width="1280" height="910" role="img" aria-labelledby="title desc">
+<title id="title">Infrastructure layers</title><desc id="desc">One AWS Dev account contains the Global layer with identity and DNS. The Singapore region contains Core with VPC and ACM, and Platform with cluster, bootstrap and Bookinfo. Each resource card is a Terragrunt unit with its own state; the four Bookinfo services share one unit and state.</desc>
+<style>text {font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}</style>
+<defs>
+<marker id="data" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#2563eb"/></marker>
+<marker id="order" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#ea580c"/></marker>
+</defs>
+<rect x="0" y="0" width="1280" height="910" rx="0" fill="#ffffff" stroke="none" stroke-width="1.6"/>
+<text x="48" y="58" font-size="30" font-weight="600" fill="#111827" text-anchor="start">Infrastructure layers</text>
+<text x="48" y="93" font-size="18" font-weight="400" fill="#526174" text-anchor="start">Account-wide resources and regional infrastructure are grouped by responsibility.</text>
+<rect x="1032" y="30" width="200" height="36" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.6"/>
+<text x="1132" y="54" font-size="15" font-weight="600" fill="#526174" text-anchor="middle">Current Dev layout</text>
+<path d="M48 119 H1232" stroke="#e5e7eb"/>
+<rect x="48" y="152" width="1184" height="658" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.6"/>
+<text x="72" y="189" font-size="23" font-weight="600" fill="#111827" text-anchor="start">AWS account</text>
+<rect x="1072" y="167" width="128" height="30" rx="15" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.6"/>
+<text x="1136" y="188" font-size="16" font-weight="600" fill="#9a3412" text-anchor="middle">Dev</text>
+<rect x="72" y="214" width="1136" height="142" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.6"/>
+<text x="96" y="254" font-size="24" font-weight="600" fill="#111827" text-anchor="start">Global</text>
+<text x="96" y="284" font-size="18" font-weight="400" fill="#526174" text-anchor="start">Account-wide</text>
+<rect x="352" y="234" width="392" height="102" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="370" y="258" font-size="14" font-weight="400" fill="#526174" text-anchor="start">global/identity</text>
+<text x="370" y="287" font-size="22" font-weight="600" fill="#111827" text-anchor="start">Identity</text>
+<text x="370" y="315" font-size="17" font-weight="400" fill="#526174" text-anchor="start">GitHub OIDC provider</text>
+<rect x="768" y="234" width="416" height="102" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="786" y="258" font-size="14" font-weight="400" fill="#526174" text-anchor="start">global/dns</text>
+<text x="786" y="287" font-size="22" font-weight="600" fill="#111827" text-anchor="start">DNS</text>
+<text x="786" y="315" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Public hosted zone</text>
+<rect x="72" y="380" width="1136" height="406" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text x="96" y="416" font-size="22" font-weight="600" fill="#111827" text-anchor="start">Region</text>
+<text x="1184" y="416" font-size="18" font-weight="400" fill="#526174" text-anchor="end">Singapore · ap-southeast-1</text>
+<rect x="96" y="440" width="1088" height="128" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.6"/>
+<text x="116" y="481" font-size="24" font-weight="600" fill="#111827" text-anchor="start">Core</text>
+<text x="116" y="511" font-size="18" font-weight="400" fill="#526174" text-anchor="start">Network and TLS</text>
+<rect x="352" y="454" width="384" height="100" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="370" y="478" font-size="14" font-weight="400" fill="#526174" text-anchor="start">core/vpc</text>
+<text x="370" y="507" font-size="22" font-weight="600" fill="#111827" text-anchor="start">VPC</text>
+<text x="370" y="535" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Network and subnets</text>
+<rect x="760" y="454" width="400" height="100" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="778" y="478" font-size="14" font-weight="400" fill="#526174" text-anchor="start">core/acm</text>
+<text x="778" y="507" font-size="22" font-weight="600" fill="#111827" text-anchor="start">ACM</text>
+<text x="778" y="535" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Shared TLS certificate</text>
+<rect x="96" y="592" width="1088" height="170" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.6"/>
+<text x="116" y="633" font-size="24" font-weight="600" fill="#111827" text-anchor="start">Platform</text>
+<text x="116" y="663" font-size="18" font-weight="400" fill="#526174" text-anchor="start">Cluster and services</text>
+<rect x="352" y="612" width="240" height="128" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="370" y="636" font-size="14" font-weight="400" fill="#526174" text-anchor="start">platform/cluster</text>
+<text x="370" y="665" font-size="22" font-weight="600" fill="#111827" text-anchor="start">EKS cluster</text>
+<text x="370" y="693" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Cluster and</text>
+<text x="370" y="718" font-size="17" font-weight="400" fill="#526174" text-anchor="start">node groups</text>
+<rect x="612" y="612" width="240" height="128" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="630" y="636" font-size="14" font-weight="400" fill="#526174" text-anchor="start">platform/bootstrap</text>
+<text x="630" y="665" font-size="22" font-weight="600" fill="#111827" text-anchor="start">Bootstrap</text>
+<text x="630" y="693" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Controllers and</text>
+<text x="630" y="718" font-size="17" font-weight="400" fill="#526174" text-anchor="start">shared monitoring</text>
+<rect x="872" y="612" width="288" height="128" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="1.6"/>
+<text x="890" y="636" font-size="14" font-weight="400" fill="#526174" text-anchor="start">platform/pillars/bookinfo</text>
+<text x="890" y="665" font-size="22" font-weight="600" fill="#111827" text-anchor="start">Bookinfo</text>
+<text x="890" y="693" font-size="17" font-weight="400" fill="#526174" text-anchor="start">Four services</text>
+<text x="48" y="851" font-size="19" font-weight="600" fill="#111827" text-anchor="start">Each card is one Terragrunt unit with its own state.</text>
+<text x="48" y="882" font-size="17" font-weight="400" fill="#526174" text-anchor="start">The four Bookinfo services share one unit and one state.</text>
+</svg>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where controls apply</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #111827; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    main { max-width: 1280px; margin: 0 auto; }
+    figure { margin: 0; overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 960px; height: auto; }
+    @media print { svg { min-width: 0; } }
+  </style>
+</head>
+<body>
+<main>
+  <figure>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 660" role="img" aria-labelledby="operating-controls-title operating-controls-desc" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+      <title id="operating-controls-title">Where controls apply</title>
+      <desc id="operating-controls-desc">GitHub Actions checks and cleanup use configured AWS and Kubernetes access controls, with separate node groups and workflow-managed ownership of temporary run objects in a shared generator namespace.</desc>
+      <defs>
+        <marker id="operating-controls-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker>
+        <marker id="operating-controls-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#b66d24"/></marker>
+        <marker id="operating-controls-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#245c9d"/></marker>
+      </defs>
+      <rect width="1280" height="660" fill="#ffffff"/>
+      <text x="40" y="60" font-size="32" font-weight="600" fill="#111827">Where controls apply</text>
+      <text x="40" y="92" font-size="18" fill="#526174">Workflow checks and cleanup use shared AWS and Kubernetes controls.</text>
+
+      <!-- Group by control owner; these outlines do not imply isolation between runs. -->
+      <rect x="40" y="136" width="496" height="448" rx="8" fill="#fafbfc" stroke="#cbd5e1" stroke-width="1"/>
+      <rect x="600" y="136" width="640" height="448" rx="8" fill="#fafbfc" stroke="#cbd5e1" stroke-width="1"/>
+      <text x="64" y="172" font-size="18" font-weight="600" fill="#526174">GITHUB ACTIONS</text>
+      <text x="624" y="172" font-size="18" font-weight="600" fill="#526174">AWS / EKS</text>
+
+      <!-- Dashed paths show run workflow actions. -->
+      <path d="M 512 276 H 624" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#operating-controls-arrow)"/>
+      <rect x="540" y="244" width="56" height="24" fill="#ffffff"/>
+      <text x="568" y="261" text-anchor="middle" font-size="12" font-weight="600" fill="#526174">OIDC</text>
+      <path d="M 764 340 V 408" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#operating-controls-arrow)"/>
+      <rect x="776" y="360" width="104" height="24" fill="#fafbfc"/>
+      <text x="788" y="377" font-size="12" font-weight="600" fill="#526174">K8S ACCESS</text>
+      <path d="M 512 488 H 624" fill="none" stroke="#b66d24" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#operating-controls-arrow-accent)"/>
+      <rect x="536" y="456" width="64" height="24" fill="#ffffff"/>
+      <text x="568" y="473" text-anchor="middle" font-size="12" font-weight="600" fill="#8f541a">CLEANUP</text>
+
+      <g id="request-checks">
+        <rect x="64" y="204" width="448" height="136" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="84" y="235" font-size="20" font-weight="600" fill="#111827">Request checks</text>
+        <rect x="412" y="216" width="80" height="28" rx="4" fill="#f1f5f9"/>
+        <text x="452" y="235" font-size="12" font-weight="600" text-anchor="middle" fill="#526174">ACTIVE</text>
+        <text x="84" y="267" font-size="18" fill="#526174">Trusted default-branch code</text>
+        <text x="84" y="293" font-size="18" fill="#526174">Target syntax; total-user limits</text>
+        <text x="84" y="319" font-size="18" fill="#526174">Duration and runner-count limits</text>
+      </g>
+
+      <g id="access-controls">
+        <rect x="624" y="204" width="592" height="136" rx="8" fill="#eff6ff" stroke="#93b8de" stroke-width="1.5"/>
+        <text x="644" y="235" font-size="20" font-weight="600" fill="#111827">Access controls</text>
+        <rect x="1080" y="216" width="116" height="28" rx="4" fill="#dbeafe"/>
+        <text x="1138" y="235" font-size="12" font-weight="600" text-anchor="middle" fill="#245c9d">CONFIGURED</text>
+        <text x="644" y="267" font-size="18" fill="#526174">OIDC trust and temporary AWS role settings</text>
+        <text x="644" y="293" font-size="18" fill="#526174">EKS access entry + namespace RBAC</text>
+        <text x="644" y="319" font-size="18" fill="#526174">No rights to change shared Dev services</text>
+      </g>
+
+      <g id="cleanup-controls">
+        <rect x="64" y="408" width="448" height="152" rx="8" fill="#fff8ef" stroke="#d2a371" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="84" y="439" font-size="20" font-weight="600" fill="#111827">After each run</text>
+        <rect x="412" y="420" width="80" height="28" rx="4" fill="#fcebd8"/>
+        <text x="452" y="439" font-size="12" font-weight="600" text-anchor="middle" fill="#8f541a">ACTIVE</text>
+        <text x="84" y="475" font-size="18" fill="#526174">Delete tracked run objects.</text>
+        <text x="84" y="503" font-size="18" fill="#526174">Check for leftovers.</text>
+        <text x="84" y="531" font-size="18" fill="#526174">Report cleanup separately.</text>
+      </g>
+
+      <g id="run-objects">
+        <rect x="624" y="408" width="284" height="152" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="644" y="439" font-size="20" font-weight="600" fill="#111827">Run objects</text>
+        <text x="644" y="470" font-size="18" fill="#526174">TestRun + ConfigMap</text>
+        <text x="644" y="496" font-size="18" fill="#526174">Jobs, Pods and Services</text>
+        <text x="644" y="532" font-size="16" fill="#526174">Shared generator namespace</text>
+      </g>
+
+      <g id="placement-controls">
+        <rect x="940" y="408" width="276" height="152" rx="8" fill="#eff6ff" stroke="#93b8de" stroke-width="1.5"/>
+        <text x="960" y="439" font-size="20" font-weight="600" fill="#111827">Separate node groups</text>
+        <text x="960" y="475" font-size="18" fill="#526174">Apps: main</text>
+        <text x="960" y="503" font-size="18" fill="#526174">Monitoring: obser</text>
+        <text x="960" y="531" font-size="18" fill="#526174">k6: load-test</text>
+      </g>
+
+      <line x1="40" y1="604" x2="1240" y2="604" stroke="#dbe2ea"/>
+      <rect x="40" y="624" width="24" height="16" rx="3" fill="#eff6ff" stroke="#93b8de"/>
+      <text x="76" y="638" font-size="14" fill="#526174">Configured foundation</text>
+      <rect x="300" y="624" width="24" height="16" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="4 3"/>
+      <text x="336" y="638" font-size="14" fill="#526174">Run workflow resources</text>
+      <line x1="572" y1="632" x2="604" y2="632" stroke="#64748b" stroke-dasharray="5 4" marker-end="url(#operating-controls-arrow)"/>
+      <text x="620" y="638" font-size="14" fill="#526174">Workflow action</text>
+    </svg>
+  </figure>
+</main>
+</body>
+</html>
